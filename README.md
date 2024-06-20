@@ -12,7 +12,7 @@
 <img class="img_profile" style=" border-radius : 20px;" src="https://scontent.fdad3-6.fna.fbcdn.net/v/t39.30808-1/427606499_1747581612421796_585693390353194637_n.jpg?stp=c0.29.200.200a_dst-jpg_p200x200&_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeH1O4WZftkYZvXTou2l_brvVtP0bgMsh5tW0_RuAyyHmycnZ9gE-gl2GQ8DDfVF-deC-MFDnO1pxIo2jQ7wjY4h&_nc_ohc=bNr4wvHyuLwQ7kNvgFdL4zl&_nc_ht=scontent.fdad3-6.fna&oh=00_AYCvGh4fbnqvwZhVn6relWd42vGZZGckwqHcgkLl2dSR-Q&oe=667A0A0D">
 <h4>Phạm Thị Thảo Nguyên (BA, Tester)</h4>
 
-<img class="img_profile" style=" border-radius : 20px;" src="https://www.facebook.com/photo.php?fbid=1535207087262684&set=pb.100023202211629.-2207520000&type=3">
+<img class="img_profile" style=" border-radius : 20px;" src="https://drive.google.com/uc?export=view&id=17c8QBGeAfD19OE1GJczc6oEeTQ4hWWfT">
 <h4>Trần Minh Quân (Frontend (Mobile) Dev)</h4>
 
 <img class="img_profile" style=" border-radius : 20px;" src="https://scontent.fdad1-3.fna.fbcdn.net/v/t39.30808-1/428329918_1702612926898170_1466684444212261860_n.jpg?stp=dst-jpg_p200x200&_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFAsNKJvXdgebPkxyDC7dN430ow_03n0gLfSjD_TefSAmf4AMkGmjH0rqXCxG7YlrARCeFnEaLwj1LflKgqbbBn&_nc_ohc=1kTOwDHLKXAQ7kNvgFfO4SB&_nc_ht=scontent.fdad1-3.fna&oh=00_AYCPDfmP5NQP6iTlGcUhu7jJt_fE4PDMy38deydKAC2czg&oe=667A465C">
