@@ -21,4 +21,9 @@ export class UpdateUserInput {
   @Length(6, 100)
   @IsString()
   password: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  avatar: string;
 }

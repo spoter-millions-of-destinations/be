@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-import { CustomBaseEntity } from '../../common/base/baseEntity';
-import { User } from '../../user/entities/user.entity';
+import { CustomBaseEntity } from '../../src/common/base/baseEntity';
+import { User } from './user.entity';
 
 @Entity('posts')
 export class Post extends CustomBaseEntity {

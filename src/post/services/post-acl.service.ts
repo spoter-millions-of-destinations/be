@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
+import { Post } from '../../../db/entities/post.entity';
 import { ROLE } from '../../auth/constants/role.constant';
 import { BaseAclService } from '../../shared/acl/acl.service';
 import { Action } from '../../shared/acl/action.constant';
 // import { Actor } from '../../shared/acl/actor.constant';
-import { Post } from '../entities/post.entity';
 
 @Injectable()
 export class PostAclService extends BaseAclService<Post> {
@@ -12,10 +12,10 @@ export class PostAclService extends BaseAclService<Post> {
     super();
     this.canDo(ROLE.ADMIN, [Action.Manage]);
     this.canDo(ROLE.USER, [Action.Create, Action.List, Action.Read]);
-    // this.canDo(ROLE.USER, [Action.Update, Action.Delete], this.isArticleAuthor);
+    // this.canDo(ROLE.USER, [Action.Update, Action.Delete], this.isPostAuthor);
   }
 
-  // isArticleAuthor(article: Article, user: Actor): boolean {
-  //   // return article.author.id === user.id;
+  // isPostAuthor(post: Post, user: Actor): boolean {
+  //   return post.user.id === user.id;
   // }
 }

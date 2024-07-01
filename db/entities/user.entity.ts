@@ -6,8 +6,8 @@ import {
   Unique,
 } from 'typeorm';
 
-import { CustomBaseEntity } from '../../common/base/baseEntity';
-import { Post } from '../../post/entities/post.entity';
+import { CustomBaseEntity } from '../../src/common/base/baseEntity';
+import { Post } from './post.entity';
 
 @Entity('users')
 export class User extends CustomBaseEntity {
@@ -23,6 +23,12 @@ export class User extends CustomBaseEntity {
   @Unique('username', ['username'])
   @Column({ length: 200 })
   username: string;
+
+  @Column('simple-array')
+  roles: string[];
+
+  @Column({ length: 500 })
+  avatar: string;
 
   @Unique('email', ['email'])
   @Column({ length: 200 })

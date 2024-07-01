@@ -17,6 +17,10 @@ export class UserOutput {
   username: string;
 
   @Expose()
+  @ApiProperty()
+  avatar: string;
+
+  @Expose()
   @ApiProperty({ example: [ROLE.USER] })
   roles: ROLE[];
 
@@ -26,7 +30,7 @@ export class UserOutput {
 
   @Expose()
   @ApiProperty()
-  isAccountDisabled: boolean;
+  isLocked: boolean;
 
   @Expose()
   @ApiProperty()

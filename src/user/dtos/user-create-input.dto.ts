@@ -46,7 +46,12 @@ export class CreateUserInput {
   @MaxLength(100)
   email: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  avatar: string;
+
   @ApiProperty()
   @IsBoolean()
-  isAccountDisabled: boolean;
+  isLocked: boolean;
 }

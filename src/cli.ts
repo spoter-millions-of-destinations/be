@@ -22,8 +22,9 @@ async function bootstrap() {
     username: 'default-admin',
     password: defaultAdminUserPassword,
     roles: [ROLE.ADMIN],
-    isAccountDisabled: false,
+    isLocked: false,
     email: 'default-admin@example.com',
+    avatar: '',
   };
 
   const ctx = new RequestContext();

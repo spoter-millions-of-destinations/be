@@ -1,20 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 
-import { AuthorOutput } from './author-output.dto';
+import { UserOutput } from './user-output.dto';
 
-export class ArticleOutput {
+export class PostOutput {
   @Expose()
   @ApiProperty()
   id: number;
 
   @Expose()
   @ApiProperty()
-  title: string;
+  description: string;
 
   @Expose()
   @ApiProperty()
-  post: string;
+  images: string[];
+
+  @Expose()
+  @ApiProperty()
+  longitude: number;
+
+  @Expose()
+  @ApiProperty()
+  latitude: number;
 
   @Expose()
   @ApiProperty()
@@ -25,7 +33,7 @@ export class ArticleOutput {
   updatedAt: Date;
 
   @Expose()
-  @Type(() => AuthorOutput)
+  @Type(() => UserOutput)
   @ApiProperty()
-  author: AuthorOutput;
+  user: UserOutput;
 }

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
-export class AuthorOutput {
+export class UserOutput {
   @Expose()
   @ApiProperty()
   id: number;
@@ -9,4 +9,8 @@ export class AuthorOutput {
   @Expose()
   @ApiProperty()
   name: string;
+
+  @Expose()
+  @ApiProperty()
+  avatar: string;
 }

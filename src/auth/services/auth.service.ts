@@ -41,7 +41,7 @@ export class AuthService {
     );
 
     // Prevent disabled users from logging in.
-    if (user.isAccountDisabled) {
+    if (user.isLocked) {
       throw new UnauthorizedException('This user account has been disabled');
     }
 
@@ -62,12 +62,17 @@ export class AuthService {
 
     // TODO : Setting default role as USER here. Will add option to change this later via ADMIN users.
     input.roles = [ROLE.USER];
-    input.isAccountDisabled = false;
+    input.isLocked = false;
+    input.avatar = '';
 
     const registeredUser = await this.userService.createUser(ctx, input);
-    return plainToClass(RegisterOutput, registeredUser, {
+
+    const output = plainToClass(RegisterOutput, registeredUser, {
       excludeExtraneousValues: true,
     });
+    const authToken = this.getAuthToken(ctx, registeredUser);
+
+    return { ...output, ...authToken };
   }
 
   async refreshToken(ctx: RequestContext): Promise<AuthTokenOutput> {

@@ -48,7 +48,7 @@ describe('AuthController (e2e)', () => {
       username: 'e2etester',
       password: '12345678',
       roles: [ROLE.USER],
-      isAccountDisabled: false,
+      isLocked: false,
       email: 'e2etester@random.com',
     };
 
@@ -57,7 +57,7 @@ describe('AuthController (e2e)', () => {
       name: 'e2etester',
       username: 'e2etester',
       roles: [ROLE.USER],
-      isAccountDisabled: false,
+      isLocked: false,
       email: 'e2etester@random.com',
     };
 
@@ -112,7 +112,7 @@ describe('AuthController (e2e)', () => {
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
-    // TODO: Should fail when isAccountDisabled is set to true.
+    // TODO: Should fail when isLocked is set to true.
   });
 
   describe('Refreshing JWT token', () => {
