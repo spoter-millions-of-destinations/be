@@ -27,4 +27,10 @@ export default (): any => ({
     ),
   },
   defaultAdminUserPassword: process.env.DEFAULT_ADMIN_USER_PASSWORD,
+  cloudinary: {
+    cloudName: process.env.CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_KEY,
+    apiSecret: process.env.CLOUDINARY_SECRET,
+    folder: process.env.CLOUDINARY_ORIGIN_FOLDER,
+  },
 });
