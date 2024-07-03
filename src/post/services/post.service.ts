@@ -3,6 +3,7 @@ import { plainToClass } from 'class-transformer';
 
 import { Post } from '../../../db/entities/post.entity';
 import { User } from '../../../db/entities/user.entity';
+import { FavoriteRepository } from '../../../db/repositories/favorite.repository';
 import { PostRepository } from '../../../db/repositories/post.repository';
 import { Action } from '../../shared/acl/action.constant';
 import { Actor } from '../../shared/acl/actor.constant';
@@ -17,6 +18,7 @@ import { PostAclService } from './post-acl.service';
 export class PostService {
   constructor(
     private repository: PostRepository,
+    private favoriteRepository: FavoriteRepository,
     private userService: UserService,
     private aclService: PostAclService,
     private readonly logger: AppLogger,
@@ -34,7 +36,6 @@ export class PostService {
     const post = plainToClass(Post, input);
 
     const actor: Actor = ctx.user!;
-    console.log('post', post);
     const user = await this.userService.getUserById(ctx, actor.id);
 
     const isAllowed = this.aclService
@@ -73,6 +74,15 @@ export class PostService {
       where: {},
       take: limit,
       skip: offset,
+      order: { createdAt: 'DESC' },
+    });
+
+    const favorites = await this.favoriteRepository.getFavoritesByUserId(
+      actor.id,
+    );
+
+    posts.forEach((post) => {
+      post.isFavorite = !!favorites.find((f) => f.postId === post.id);
     });
 
     const postsOutput = plainToClass(PostOutput, posts, {
@@ -96,6 +106,11 @@ export class PostService {
     if (!isAllowed) {
       throw new UnauthorizedException();
     }
+
+    post.isFavorite = await this.favoriteRepository.checkFavorite(
+      actor.id,
+      post.id,
+    );
 
     return plainToClass(PostOutput, post, {
       excludeExtraneousValues: true,

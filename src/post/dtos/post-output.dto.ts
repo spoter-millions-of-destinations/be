@@ -26,6 +26,10 @@ export class PostOutput {
 
   @Expose()
   @ApiProperty()
+  isFavorite: boolean;
+
+  @Expose()
+  @ApiProperty()
   createdAt: Date;
 
   @Expose()

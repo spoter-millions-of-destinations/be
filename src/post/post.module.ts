@@ -1,6 +1,7 @@
 import { Module, Post } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { FavoriteRepository } from '../../db/repositories/favorite.repository';
 import { PostRepository } from '../../db/repositories/post.repository';
 import { JwtAuthStrategy } from '../auth/strategies/jwt-auth.strategy';
 import { SharedModule } from '../shared/shared.module';
@@ -11,7 +12,13 @@ import { PostAclService } from './services/post-acl.service';
 
 @Module({
   imports: [SharedModule, TypeOrmModule.forFeature([Post]), UserModule],
-  providers: [PostService, JwtAuthStrategy, PostAclService, PostRepository],
+  providers: [
+    PostService,
+    JwtAuthStrategy,
+    PostAclService,
+    PostRepository,
+    FavoriteRepository,
+  ],
   controllers: [PostController],
   exports: [PostService],
 })
