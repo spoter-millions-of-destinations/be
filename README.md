@@ -1,87 +1,180 @@
-<h2>Spoter-Million Of Destination</h2>
+## NestJS Starter Kit [v2]
 
-<h2>Timeline</h2>
-- Timeline here
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![build](https://github.com/monstar-lab-oss/nestjs-starter-rest-api/actions/workflows/build-workflow.yml/badge.svg?branch=master&event=push)](https://github.com/monstar-lab-oss/nestjs-starter-rest-api/actions/workflows/build-workflow.yml)
+[![tests](https://github.com/monstar-lab-oss/nestjs-starter-rest-api/actions/workflows/tests-workflow.yml/badge.svg?branch=master&event=push)](https://github.com/monstar-lab-oss/nestjs-starter-rest-api/actions/workflows/tests-workflow.yml)
 
-<h3>Contributor</h3>
-<table>
-<tr>
-<td> 
-<img width="100" height="100" src="https://scontent.fdad3-6.fna.fbcdn.net/v/t39.30808-1/414662153_1787969228333814_4234116496793469603_n.jpg?stp=dst-jpg_p200x200&_nc_cat=107&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGr4PYTOz0sYppM7VaZcXbLRMwCuVogi4tEzAK5WiCLi0nnm_3L02uLCJT9N2gRfkazTKe63cCXnC1-Bw5fdi5G&_nc_ohc=RjTkXU3gUs0Q7kNvgES_bOe&_nc_ht=scontent.fdad3-6.fna&oh=00_AYCGcW87OoRH7q1Nt4XQW2R7t3aFBXI8DSSzF7VXG39sqg&oe=667A2848">
-<h4>Huỳnh Phước Nguyên<br>(PM, Dev support)</h4>
-</td>
+This starter kit has the following outline:
 
-<td>
-<img width="100" height="100" src="https://scontent.fdad3-6.fna.fbcdn.net/v/t39.30808-1/427606499_1747581612421796_585693390353194637_n.jpg?stp=c0.29.200.200a_dst-jpg_p200x200&_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeH1O4WZftkYZvXTou2l_brvVtP0bgMsh5tW0_RuAyyHmycnZ9gE-gl2GQ8DDfVF-deC-MFDnO1pxIo2jQ7wjY4h&_nc_ohc=bNr4wvHyuLwQ7kNvgFdL4zl&_nc_ht=scontent.fdad3-6.fna&oh=00_AYCvGh4fbnqvwZhVn6relWd42vGZZGckwqHcgkLl2dSR-Q&oe=667A0A0D">
-<h4>Phạm Thị Thảo Nguyên<br>(BA, Tester)</h4>
-</td>
+- Monolithic Project
+- REST API
 
-<td>
-<img width="100" height="100" src="https://drive.google.com/uc?export=view&id=17c8QBGeAfD19OE1GJczc6oEeTQ4hWWfT">
-<h4>Trần Minh Quân<br>(Frontend, Mobile Dev)</h4>
-</td>
+This is a Github Template Repository, so it can be easily [used as a starter template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template) for other repositories.
 
-<td>
-<img width="100" height="100" src="https://scontent.fdad1-3.fna.fbcdn.net/v/t39.30808-1/428329918_1702612926898170_1466684444212261860_n.jpg?stp=dst-jpg_p200x200&_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFAsNKJvXdgebPkxyDC7dN430ow_03n0gLfSjD_TefSAmf4AMkGmjH0rqXCxG7YlrARCeFnEaLwj1LflKgqbbBn&_nc_ohc=1kTOwDHLKXAQ7kNvgFfO4SB&_nc_ht=scontent.fdad1-3.fna&oh=00_AYCPDfmP5NQP6iTlGcUhu7jJt_fE4PDMy38deydKAC2czg&oe=667A465C">
-<h4>Nguyễn Thị Cầm<br>(Backend Dev)</h4>
-</td>
+## Sample implementations
 
-<td>
-<img width="100" height="100" src="https://scontent.fdad1-3.fna.fbcdn.net/v/t39.30808-1/437897709_1489292515264133_3309044121278455918_n.jpg?stp=c50.0.200.200a_dst-jpg_p200x200&_nc_cat=111&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGigDcpPdpYJ1w0to3MN9_uXSYMy-9-pAtdJgzL736kCxh-_qXzDWAlgg1kI7UFuHB7nkHn6exeEd37HoXxNCpn&_nc_ohc=GR0wCXXrb5AQ7kNvgFyrcBd&_nc_ht=scontent.fdad1-3.fna&oh=00_AYDUHfr6Mi8nOmNyTd5G6ahudOkyT7c_CzrdGUEuHfqbiA&oe=667A55BD">
-<h4>Trần Quang Vinh<br>(Designer, Tester)</h4>
-</td>
+To view sample implementations based on this starter kit, please visit the [nestjs-sample-solutions](https://github.com/monstar-lab-oss/nestjs-sample-solutions) repository.
 
-</tr>
-</table>
+## Starter kit Features
 
-<h2>Technical used</h2>
-<ul>
-<li>Front End
-<ul>
-  <li>Language
-    <ul>
-      <li>Dart</li>
-    </ul>
-  </li>
-  <li>Framework
-    <ul>
-      <li>Flutter</li>
-    </ul>
-  </li>
-</ul>
-</li>
-  
-<li>Back End
-<ul>
-  <li>Language
-    <ul>
-      <li>Javascript</li>
-    </ul>
-  </li>
-  <li>Framework
-    <ul>
-      <li>NodeJS, ExpressJS</li>
-    </ul>
-  </li>
-</ul>
-</li>
+One of our main principals has been to keep the starter kit as lightweight as possible. With that in mind, here are some of the features that we have added in this starter kit.
 
-<li>DBMS
-  <ul>
-    <li>Firebase</li>
-  </ul>
-</li>
+| Feature                  | Info               | Progress |
+|--------------------------|--------------------|----------|
+| Authentication           | JWT                | Done     |
+| Authorization            | RBAC (Role based)  | Done     |
+| ORM Integration          | TypeORM            | Done     |
+| DB Migrations            | TypeORM            | Done     |
+| Logging                  | winston            | Done     |
+| Request Validation       | class-validator    | Done     |
+| Pagination               | SQL offset & limit | Done     |
+| Docker Ready             | Dockerfile         | Done     |
+| Devcontainer             | -                  | Done     |
+| Auto-generated OpenAPI   | -                  | Done     |
+| Auto-generated ChangeLog | -                  | WIP      |
 
-<li>UI/UX Design Platform
-  <ul>
-    <li>Figma</li>
-  </ul>
-</li>
-</ul>
+Apart from these features above, our start-kit comes loaded with a bunch of minor awesomeness like prettier integration, commit-linting husky hooks, package import sorting, SonarCloud github actions, docker-compose for database dependencies, etc. :D
 
-<h2>How to run</h2>
-<ul> 
-<li>git clone https://github.com/Quannichan/Spoter_million_of_destination.git</li>
-<li>pnpm install</li>
-<li>pnpm run test</li>
-</ul>
+## Consulting
+
+Most of the features added to this starter kit have already been tried out in production applications by us here at MonstarLab. Our production applications are more feature rich, and we constantly strive to bring those features to this OSS starter kit.
+
+If you would like to use a more feature rich starter kit, with more awesome features from Day 1, then please reach out to us and we can collaborate on it together as technology partners. :)
+
+## Installation
+
+Note: when using docker, all the `npm` commands can also be performed using `./scripts/npm` (for example `./scripts/npm install`).
+This script allows you to run the same commands inside the same environment and versions than the service, without relying on what is installed on the host.
+
+```bash
+$ npm install
+```
+
+Create a `.env` file from the template `.env.template` file.
+
+Generate public and private key pair for jwt authentication:
+
+### With docker
+
+Run this command:
+```bash
+./scripts/generate-jwt-keys
+```
+
+It will output something like this. You only need to add it to your `.env` file.
+```
+To setup the JWT keys, please add the following values to your .env file:
+JWT_PUBLIC_KEY_BASE64="(long base64 content)"
+JWT_PRIVATE_KEY_BASE64="(long base64 content)"
+```
+
+### Without docker
+
+```bash
+$ ssh-keygen -t rsa -b 2048 -m PEM -f jwtRS256.key
+# Don't add passphrase
+$ openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
+```
+
+You may save these key files in `./local` directory as it is ignored in git.
+
+Encode keys to base64:
+
+```bash
+$ base64 -i local/jwtRS256.key
+
+$ base64 -i local/jwtRS256.key.pub
+```
+
+Must enter the base64 of the key files in `.env`:
+
+```bash
+JWT_PUBLIC_KEY_BASE64=BASE64_OF_JWT_PUBLIC_KEY
+JWT_PRIVATE_KEY_BASE64=BASE64_OF_JWT_PRIVATE_KEY
+```
+
+## Running the app
+
+We can run the project with or without docker.
+
+### Local
+
+To run the server without Docker we need this pre-requisite:
+
+- Postgres server running
+
+Commands:
+
+```bash
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
+```
+
+### Docker
+
+```bash
+# build image
+$ docker build -t my-app .
+
+# run container from image
+$ docker run -p 3000:3000 --volume 'pwd':/usr/src/app --network --env-file .env my-app
+
+# run using docker compose
+$ docker compose up
+```
+
+Learn more about Docker conventions [here](https://github.com/monstar-lab-group/nodejs-backend/blob/master/architecture/docker-ready.md). (WIP - Currently this is an internal org link.)
+
+## Test
+
+```bash
+# unit tests
+$ npm run test
+
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
+```
+
+## Migrations
+
+```bash
+# using docker
+$ docker compose exec app npm run migration:run
+
+# generate migration (replace CreateUsers with name of the migration)
+$ npm run migration:generate --name=CreateUsers
+
+# run migration
+$ npm run migration:run
+
+# revert migration
+$ npm run migration:revert
+```
+
+## Architecture
+
+- [Project Structure](./docs/project-structure.md)
+
+## Contributors
+
+- [Yash Murty](https://github.com/yashmurty)
+- [S M Asad Rahman](https://github.com/asad-mlbd)
+- [Tanveer Hassan](https://github.com/war1oc)
+- [Saad Bin Amjad](https://github.com/Saad-Amjad)
+- [Sivan Payyadakath](https://github.com/sivanpayyadakath)
+- [Sébastien Caparros](https://github.com/Seb-C)
+
+## External Links
+
+<a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo.svg" width="150" alt="Nest Logo" /></a>
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=monstar-lab-oss_nestjs-starter-rest-api)
