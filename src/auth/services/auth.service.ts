@@ -7,6 +7,7 @@ import { AppLogger } from '../../shared/logger/logger.service';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
 import { UserOutput } from '../../user/dtos/user-output.dto';
 import { UserService } from '../../user/services/user.service';
+import { DEFAULT_AVATAR } from '../constants/index.constant';
 import { ROLE } from '../constants/role.constant';
 import { RegisterInput } from '../dtos/auth-register-input.dto';
 import { RegisterOutput } from '../dtos/auth-register-output.dto';
@@ -63,7 +64,7 @@ export class AuthService {
     // TODO : Setting default role as USER here. Will add option to change this later via ADMIN users.
     input.roles = [ROLE.USER];
     input.isLocked = false;
-    input.avatar = '';
+    input.avatar = DEFAULT_AVATAR;
 
     const registeredUser = await this.userService.createUser(ctx, input);
 

@@ -13,7 +13,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
   app.use(RequestIdMiddleware);
-  app.enableCors();
+  // app.enableCors();
 
   /** Swagger configuration*/
   const options = new DocumentBuilder()
