@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 
+// import { Like } from 'typeorm';
 import { Post } from '../../../db/entities/post.entity';
 import { User } from '../../../db/entities/user.entity';
 import { FavoriteRepository } from '../../../db/repositories/favorite.repository';
@@ -10,6 +11,7 @@ import { Actor } from '../../shared/acl/actor.constant';
 import { AppLogger } from '../../shared/logger/logger.service';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
 import { UserService } from '../../user/services/user.service';
+import { GetPostsParamsDto } from '../dtos/get-posts-input.dto';
 import { CreatePostInput, UpdatePostInput } from '../dtos/post-input.dto';
 import { PostOutput } from '../dtos/post-output.dto';
 import { PostAclService } from './post-acl.service';
@@ -57,10 +59,11 @@ export class PostService {
 
   async getPosts(
     ctx: RequestContext,
-    limit: number,
-    offset: number,
+    query: GetPostsParamsDto,
   ): Promise<{ posts: PostOutput[]; count: number }> {
     this.logger.log(ctx, `${this.getPosts.name} was called`);
+
+    // const { search, limit, offset, longitude, latitude } = query;
 
     const actor: Actor = ctx.user!;
 
@@ -70,12 +73,7 @@ export class PostService {
     }
 
     this.logger.log(ctx, `calling ${PostRepository.name}.findAndCount`);
-    const [posts, count] = await this.repository.findAndCount({
-      where: {},
-      take: limit,
-      skip: offset,
-      order: { createdAt: 'DESC' },
-    });
+    const [posts, count] = await this.repository.getPosts(query);
 
     const favorites = await this.favoriteRepository.getFavoritesByUserId(
       actor.id,

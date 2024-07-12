@@ -23,10 +23,10 @@ import {
   BaseApiResponse,
   SwaggerBaseApiResponse,
 } from '../../shared/dtos/base-api-response.dto';
-import { PaginationParamsDto } from '../../shared/dtos/pagination-params.dto';
 import { AppLogger } from '../../shared/logger/logger.service';
 import { ReqContext } from '../../shared/request-context/req-context.decorator';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
+import { GetPostsParamsDto } from '../dtos/get-posts-input.dto';
 import { CreatePostInput } from '../dtos/post-input.dto';
 import { PostOutput } from '../dtos/post-output.dto';
 import { PostService } from '../services/post.service';
@@ -73,14 +73,13 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   async getPosts(
     @ReqContext() ctx: RequestContext,
-    @Query() query: PaginationParamsDto,
+    @Query() query: GetPostsParamsDto,
   ): Promise<BaseApiResponse<PostOutput[]>> {
     this.logger.log(ctx, `${this.getPosts.name} was called`);
 
     const { posts, count } = await this.postService.getPosts(
       ctx,
-      query.limit,
-      query.offset,
+      query
     );
 
     return { data: posts, meta: { count } };

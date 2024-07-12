@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 
+import { GetPostsParamsDto } from '../../src/post/dtos/get-posts-input.dto';
 import { Post } from '../entities/post.entity';
 
 @Injectable()
@@ -16,5 +17,35 @@ export class PostRepository extends Repository<Post> {
     }
 
     return post;
+  }
+
+  async getPosts(query: GetPostsParamsDto): Promise<[Post[], number]> {
+    const qb = this.createQueryBuilder('post')
+      .where('post.description ILIKE :search', { search: `%${query.search ?? ''}%` })
+      .skip(query.offset)
+      .take(query.limit);
+
+      if (query.longitude && query.latitude) {
+        qb.andWhere(
+          `ST_DWithin(
+              'SRID=4326;POINT(${query.longitude} ${query.latitude})'::geography,
+              ST_SetSRID(ST_MakePoint("post"."longitude", "post"."latitude"), 4326)::geography,
+              100000
+          )`
+        )
+        .orderBy(
+          `ST_Distance(
+              'SRID=4326;POINT(${query.longitude} ${query.latitude})'::geography,
+              ST_SetSRID(ST_MakePoint("post"."longitude", "post"."latitude"), 4326)::geography
+          )`,
+          'ASC',
+
+        );
+      }
+      else {
+        qb.orderBy('post.createdAt', 'DESC');
+      }
+      console.log('qb.getQueryAndParameters()', qb.getQueryAndParameters());
+    return await qb.getManyAndCount();
   }
 }
