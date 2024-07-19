@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -21,13 +22,17 @@ export class Post extends CustomBaseEntity {
   @Column({ type: 'text', array: true, nullable: true, default: [] })
   images: string[];
 
-  @Column()
+  @Column({ type: 'numeric' })
   longitude: number;
 
-  @Column()
+  @Column({ type: 'numeric' })
   latitude: number;
 
+  @Column()
+  userId: number;
+
   @ManyToOne(() => User, (user) => user.posts)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @OneToMany(() => Favorite, (favorite) => favorite.post)

@@ -18,6 +18,7 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+// import { ResponseMessageBase } from '../../common/base/returnBase';
 import {
   BaseApiErrorResponse,
   BaseApiResponse,
@@ -109,6 +110,24 @@ export class PostController {
     const post = await this.postService.getPostById(ctx, id);
     return { data: post, meta: {} };
   }
+
+  // @Post('crawl')
+  // @ApiOperation({
+  //   summary: 'Crawl data from website API',
+  // })
+  // @ApiResponse({
+  //   status: HttpStatus.CREATED,
+  //   type: SwaggerBaseApiResponse(ResponseMessageBase),
+  // })
+  // @UseInterceptors(ClassSerializerInterceptor)
+  // async crawlData(
+  //   @ReqContext() ctx: RequestContext,
+  // ): Promise<ResponseMessageBase> {
+  //   this.logger.log(ctx, `${this.crawlData.name} was called`);
+
+  //   await this.postService.crawlData();
+  //   return { success: true, message: 'Data has been saved successfully.' };
+  // }
 
   // @Patch(':id')
   // @ApiOperation({

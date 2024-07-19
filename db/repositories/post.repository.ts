@@ -30,7 +30,7 @@ export class PostRepository extends Repository<Post> {
           `ST_DWithin(
               'SRID=4326;POINT(${query.longitude} ${query.latitude})'::geography,
               ST_SetSRID(ST_MakePoint("post"."longitude", "post"."latitude"), 4326)::geography,
-              100000
+              ${query.radius ?? 10000}
           )`
         )
         .orderBy(

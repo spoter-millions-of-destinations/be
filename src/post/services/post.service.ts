@@ -11,10 +11,12 @@ import { Actor } from '../../shared/acl/actor.constant';
 import { AppLogger } from '../../shared/logger/logger.service';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
 import { UserService } from '../../user/services/user.service';
+// import { crawlData } from '../../utils/crawlData';
 import { GetPostsParamsDto } from '../dtos/get-posts-input.dto';
 import { CreatePostInput, UpdatePostInput } from '../dtos/post-input.dto';
 import { PostOutput } from '../dtos/post-output.dto';
 import { PostAclService } from './post-acl.service';
+import { readExcelFile } from './uploadDataFromExcel';
 
 @Injectable()
 export class PostService {
@@ -109,6 +111,7 @@ export class PostService {
       actor.id,
       post.id,
     );
+    console.log('post', post);
 
     return plainToClass(PostOutput, post, {
       excludeExtraneousValues: true,
@@ -161,5 +164,16 @@ export class PostService {
 
     this.logger.log(ctx, `calling ${PostRepository.name}.remove`);
     await this.repository.remove(post);
+  }
+
+  async crawlData() {
+    const users = await User.find();
+    const filePath = 'data/maps-results2.xlsx';
+    const posts: Partial<Post>[] = readExcelFile(filePath)
+    posts.forEach((post) => {
+      post.userId = users[Math.floor(Math.random() * users.length)].id;
+    })
+    // console.log('posts', posts);
+    await this.repository.save(posts);
   }
 }

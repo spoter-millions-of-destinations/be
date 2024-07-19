@@ -30,4 +30,13 @@ export class GetPostsParamsDto extends PaginationParamsDto {
   @IsOptional()
   @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
   latitude?: number;
+
+  @ApiPropertyOptional({
+    description: 'Optional',
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
+  radius?: number;
 }
