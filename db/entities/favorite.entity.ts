@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { CustomBaseEntity } from '../../src/common/base/baseEntity';
 import { Post } from './post.entity';
@@ -16,8 +16,10 @@ export class Favorite extends CustomBaseEntity {
   postId: number;
 
   @ManyToOne(() => User)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @ManyToOne(() => Post, (post) => post.favorites)
+  @JoinColumn({ name: 'postId' })
   post: Post;
 }

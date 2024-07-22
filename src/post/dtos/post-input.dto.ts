@@ -18,6 +18,10 @@ export class CreatePostInput {
   @ApiProperty()
   @IsNumber()
   latitude: number;
+
+  @ApiProperty()
+  @IsNumber()
+  rate: number;
 }
 
 export class UpdatePostInput {

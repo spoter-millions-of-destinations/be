@@ -11,7 +11,7 @@ export class PostRepository extends Repository<Post> {
   }
 
   async getById(id: number): Promise<Post> {
-    const post = await this.findOne({ where: { id } });
+    const post = await this.findOne({ where: { id }, relations: ['user'] });
     if (!post) {
       throw new NotFoundException();
     }
@@ -21,9 +21,12 @@ export class PostRepository extends Repository<Post> {
 
   async getPosts(query: GetPostsParamsDto): Promise<[Post[], number]> {
     const qb = this.createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
       .where('post.description ILIKE :search', { search: `%${query.search ?? ''}%` })
       .skip(query.offset)
       .take(query.limit);
+
+      query.rate && qb.andWhere('post.rate = :rate', { rate: query.rate });
 
       if (query.longitude && query.latitude) {
         qb.andWhere(

@@ -30,6 +30,10 @@ export class PostOutput {
 
   @Expose()
   @ApiProperty()
+  rate: number;
+
+  @Expose()
+  @ApiProperty()
   createdAt: Date;
 
   @Expose()

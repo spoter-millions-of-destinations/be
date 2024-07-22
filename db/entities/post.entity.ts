@@ -31,6 +31,9 @@ export class Post extends CustomBaseEntity {
   @Column()
   userId: number;
 
+  @Column()
+  rate: number;
+
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: 'userId' })
   user: User;
