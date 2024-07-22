@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { plainToClass } from 'class-transformer';
 
+import { CollectionRepository } from '../../../db/repositories/collection.repository';
 import { AppLogger } from '../../shared/logger/logger.service';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
 import { UserOutput } from '../../user/dtos/user-output.dto';
@@ -22,6 +23,7 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private collectionRepository: CollectionRepository,
     private readonly logger: AppLogger,
   ) {
     this.logger.setContext(AuthService.name);
@@ -67,6 +69,15 @@ export class AuthService {
     input.avatar = DEFAULT_AVATAR;
 
     const registeredUser = await this.userService.createUser(ctx, input);
+
+    const defaultCollection = {
+      name: 'My Collections',
+      description: 'Private',
+      image: '',
+      userId: registeredUser.id,
+    };
+
+    this.collectionRepository.save(defaultCollection);
 
     const output = plainToClass(RegisterOutput, registeredUser, {
       excludeExtraneousValues: true,

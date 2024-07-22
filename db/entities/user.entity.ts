@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 
 import { CustomBaseEntity } from '../../src/common/base/baseEntity';
+import { Collection } from './collection.entity';
 import { Post } from './post.entity';
 
 @Entity('users')
@@ -42,4 +43,7 @@ export class User extends CustomBaseEntity {
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => Collection, (collection) => collection.user)
+  collections: Collection[];
 }

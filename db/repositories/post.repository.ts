@@ -48,7 +48,7 @@ export class PostRepository extends Repository<Post> {
       else {
         qb.orderBy('post.createdAt', 'DESC');
       }
-      console.log('qb.getQueryAndParameters()', qb.getQueryAndParameters());
+      
     return await qb.getManyAndCount();
   }
 }

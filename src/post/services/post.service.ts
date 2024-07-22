@@ -65,8 +65,6 @@ export class PostService {
   ): Promise<{ posts: PostOutput[]; count: number }> {
     this.logger.log(ctx, `${this.getPosts.name} was called`);
 
-    // const { search, limit, offset, longitude, latitude } = query;
-
     const actor: Actor = ctx.user!;
 
     const isAllowed = this.aclService.forActor(actor).canDoAction(Action.List);
@@ -111,7 +109,6 @@ export class PostService {
       actor.id,
       post.id,
     );
-    console.log('post', post);
 
     return plainToClass(PostOutput, post, {
       excludeExtraneousValues: true,

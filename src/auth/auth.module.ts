@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
+import { CollectionRepository } from '../../db/repositories/collection.repository';
 import { SharedModule } from '../shared/shared.module';
 import { UserModule } from '../user/user.module';
 import { STRATEGY_JWT_AUTH } from './constants/strategy.constant';
@@ -30,6 +31,6 @@ import { LocalStrategy } from './strategies/local.strategy';
     UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtAuthStrategy, JwtRefreshStrategy],
+  providers: [AuthService, LocalStrategy, JwtAuthStrategy, JwtRefreshStrategy, CollectionRepository],
 })
 export class AuthModule {}
