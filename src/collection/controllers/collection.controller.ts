@@ -2,6 +2,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -31,6 +32,7 @@ import { RequestContext } from '../../shared/request-context/request-context.dto
 import { AddPostToCollectionsInput } from '../dtos/add-post-to-collections-input.dto';
 import { CreateCollectionInput } from '../dtos/collection-input.dto';
 import { CollectionOutput } from '../dtos/collection-output.dto';
+import { RemovePostFromCollectionsInput } from '../dtos/remove-post-from-collection-input.dto';
 import { CollectionService } from '../services/collection.service';
 
 @ApiTags('collections')
@@ -134,6 +136,56 @@ export class CollectionController {
 
     const result = await this.collectionService.addPostsToCollection(ctx, query);
     
+    return {
+      data: result,
+      meta: {},
+    };
+  }
+
+  @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete collection by id API',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: SwaggerBaseApiResponse(ResponseMessageBase),
+  })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async deleteCollection(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') id: number,
+  ): Promise<BaseApiResponse<ResponseMessageBase>> {
+    this.logger.log(ctx, `${this.deleteCollection.name} was called`);
+
+    const result = await this.collectionService.deleteCollection(ctx, id);
+
+    return {
+      data: result,
+      meta: {},
+    };
+  }
+
+  @Post('items/remove')
+  @ApiOperation({
+    summary: 'Remove post from collections API',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: SwaggerBaseApiResponse(ResponseMessageBase),
+  })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async removePostFromCollection(
+    @ReqContext() ctx: RequestContext,
+    @Body() query: RemovePostFromCollectionsInput,
+  ): Promise<BaseApiResponse<ResponseMessageBase>> {
+    this.logger.log(ctx, `${this.removePostFromCollection.name} was called`);
+
+    const result = await this.collectionService.removePostFromCollection(ctx, query);
+
     return {
       data: result,
       meta: {},

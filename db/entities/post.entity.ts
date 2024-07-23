@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { CustomBaseEntity } from '../../src/common/base/baseEntity';
+import { Comment } from './comment.entity';
 import { Favorite } from './favorite.entity';
 import { User } from './user.entity';
 
@@ -40,6 +41,9 @@ export class Post extends CustomBaseEntity {
 
   @OneToMany(() => Favorite, (favorite) => favorite.post)
   favorites: Favorite[];
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments: Comment[];
 
   //Virtual column
   @Column({

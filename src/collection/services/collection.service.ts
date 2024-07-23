@@ -21,6 +21,7 @@ import { UserService } from '../../user/services/user.service';
 import { AddPostToCollectionsInput } from '../dtos/add-post-to-collections-input.dto';
 import { CreateCollectionInput } from '../dtos/collection-input.dto';
 import { CollectionOutput } from '../dtos/collection-output.dto';
+import { RemovePostFromCollectionsInput } from '../dtos/remove-post-from-collection-input.dto';
 import { CollectionAclService } from './collection-acl.service';
 
 @Injectable()
@@ -162,5 +163,54 @@ export class CollectionService {
     await this.collectionItemRepository.save(collectionItems);
 
     return { message: 'Post added to collection', success: true };
+  }
+
+  async deleteCollection(
+    ctx: RequestContext,
+    id: number,
+  ): Promise<ResponseMessageBase> {
+    this.logger.log(ctx, `${this.deleteCollection.name} was called`);
+
+    const actor: Actor = ctx.user!;
+
+    this.logger.log(ctx, `calling ${CollectionRepository.name}.getById`);
+    const collection = await this.repository.getById(id);
+
+    const isAllowed = this.aclService
+      .forActor(actor)
+      .canDoAction(Action.Delete, collection);
+    if (!isAllowed) {
+      throw new UnauthorizedException();
+    }
+
+    this.logger.log(ctx, `calling ${CollectionRepository.name}.delete`);
+    await this.repository.delete(id);
+
+    return { message: 'Collection deleted successfully', success: true };
+  }
+
+  async removePostFromCollection(
+    ctx: RequestContext,
+    query: RemovePostFromCollectionsInput,
+  ): Promise<ResponseMessageBase> {
+    this.logger.log(ctx, `${this.removePostFromCollection.name} was called`);
+    const { postId, collectionId } = query;
+
+    const actor: Actor = ctx.user!;
+
+    this.logger.log(ctx, `calling ${CollectionRepository.name}.getById`);
+    const collection = await this.repository.getById(collectionId);
+
+    const isAllowed = this.aclService
+      .forActor(actor)
+      .canDoAction(Action.Update, collection);
+    if (!isAllowed) {
+      throw new UnauthorizedException();
+    }
+
+    this.logger.log(ctx, `calling ${CollectionItemRepository.name}.delete`);
+    await this.collectionItemRepository.delete({ postId, collectionId });
+
+    return { message: 'Post removed from collection', success: true };
   }
 }
