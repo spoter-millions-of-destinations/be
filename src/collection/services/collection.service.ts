@@ -14,13 +14,13 @@ import { PostRepository } from '../../../db/repositories/post.repository';
 import { ResponseMessageBase } from '../../common/base/returnBase';
 import { Action } from '../../shared/acl/action.constant';
 import { Actor } from '../../shared/acl/actor.constant';
-import { PaginationParamsDto } from '../../shared/dtos/pagination-params.dto';
 import { AppLogger } from '../../shared/logger/logger.service';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
 import { UserService } from '../../user/services/user.service';
-import { AddPostToCollectionsInput } from '../dtos/add-post-to-collections-input.dto';
+import { AddPostToCollectionsInput, AddPostToDefaultCollectionInput } from '../dtos/add-post-to-collections-input.dto';
 import { CreateCollectionInput } from '../dtos/collection-input.dto';
 import { CollectionOutput } from '../dtos/collection-output.dto';
+import { GetCollectionsParamsDto } from '../dtos/get-collections-input.dto';
 import { RemovePostFromCollectionsInput } from '../dtos/remove-post-from-collection-input.dto';
 import { CollectionAclService } from './collection-acl.service';
 
@@ -69,10 +69,10 @@ export class CollectionService {
 
   async getCollections(
     ctx: RequestContext,
-    query: PaginationParamsDto,
+    query: GetCollectionsParamsDto,
   ): Promise<{ collections: CollectionOutput[]; count: number }> {
     this.logger.log(ctx, `${this.getCollections.name} was called`);
-    const { limit, offset } = query;
+    const { limit, offset, postId } = query;
 
     const actor: Actor = ctx.user!;
 
@@ -82,12 +82,12 @@ export class CollectionService {
     }
 
     this.logger.log(ctx, `calling ${CollectionRepository.name}.find`);
-    const [collections, count] = await this.repository.findAndCount({
-      where: { userId: actor.id },
-      take: limit,
-      skip: offset,
-      relations: ['user'],
-    });
+    const [collections, count] = await this.repository.getCollections(
+      actor.id,
+      offset,
+      limit,
+      postId,
+    );
 
     const collectionsOutput = plainToClass(CollectionOutput, collections, {
       excludeExtraneousValues: true,
@@ -212,5 +212,45 @@ export class CollectionService {
     await this.collectionItemRepository.delete({ postId, collectionId });
 
     return { message: 'Post removed from collection', success: true };
+  }
+
+  async addPostToDefaultCollection(
+    ctx: RequestContext,
+    query: AddPostToDefaultCollectionInput,
+  ): Promise<ResponseMessageBase> {
+    this.logger.log(ctx, `${this.addPostToDefaultCollection.name} was called`);
+    const { postId } = query;
+
+    const actor: Actor = ctx.user!;
+
+    const collection = await this.repository.findOne({
+      where: { userId: actor.id, name: 'My Collections' },
+    });
+
+    if (!collection) {
+      return { message: 'Default collection not found', success: false };
+    }
+
+    const isAllowed = this.aclService
+      .forActor(actor)
+      .canDoAction(Action.Update, collection);
+    if (!isAllowed) {
+      throw new UnauthorizedException();
+    }
+
+    const isPostInCollection = await this.collectionItemRepository.findOne({
+      where: { postId, collectionId: collection.id },
+    });
+
+    if (isPostInCollection) {
+      return { message: 'Post is already in the default collection', success: true };
+    }
+
+    await this.collectionItemRepository.save({
+      postId,
+      collectionId: collection.id,
+    });
+
+    return { message: 'Post added to default collection', success: true };
   }
 }

@@ -34,4 +34,14 @@ export class Collection extends CustomBaseEntity {
 
   @OneToMany(() => CollectionItem, (collectionItem) => collectionItem.collection)
   collectionItems: CollectionItem[];
+
+  //Virtual column
+  @Column({
+    type: 'bit',
+    select: false,
+    insert: false,
+    update: false,
+    nullable: true,
+  })
+  isAdded: boolean;
 }

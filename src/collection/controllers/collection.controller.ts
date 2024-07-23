@@ -25,13 +25,13 @@ import {
   BaseApiResponse,
   SwaggerBaseApiResponse,
 } from '../../shared/dtos/base-api-response.dto';
-import { PaginationParamsDto } from '../../shared/dtos/pagination-params.dto';
 import { AppLogger } from '../../shared/logger/logger.service';
 import { ReqContext } from '../../shared/request-context/req-context.decorator';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
-import { AddPostToCollectionsInput } from '../dtos/add-post-to-collections-input.dto';
+import { AddPostToCollectionsInput, AddPostToDefaultCollectionInput } from '../dtos/add-post-to-collections-input.dto';
 import { CreateCollectionInput } from '../dtos/collection-input.dto';
 import { CollectionOutput } from '../dtos/collection-output.dto';
+import { GetCollectionsParamsDto } from '../dtos/get-collections-input.dto';
 import { RemovePostFromCollectionsInput } from '../dtos/remove-post-from-collection-input.dto';
 import { CollectionService } from '../services/collection.service';
 
@@ -80,7 +80,7 @@ export class CollectionController {
   @UseGuards(JwtAuthGuard)
   async getCollections(
     @ReqContext() ctx: RequestContext,
-    @Query() query: PaginationParamsDto,
+    @Query() query: GetCollectionsParamsDto,
   ): Promise<BaseApiResponse<CollectionOutput[]>> {
     this.logger.log(ctx, `${this.getCollections.name} was called`);
 
@@ -185,6 +185,31 @@ export class CollectionController {
     this.logger.log(ctx, `${this.removePostFromCollection.name} was called`);
 
     const result = await this.collectionService.removePostFromCollection(ctx, query);
+
+    return {
+      data: result,
+      meta: {},
+    };
+  }
+
+  @Post('items/add-to-default-collection')
+  @ApiOperation({
+    summary: 'Add post to default collection API',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: SwaggerBaseApiResponse(ResponseMessageBase),
+  })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async addPostToDefaultCollection(
+    @ReqContext() ctx: RequestContext,
+    @Body() query: AddPostToDefaultCollectionInput,
+  ): Promise<BaseApiResponse<ResponseMessageBase>> {
+    this.logger.log(ctx, `${this.addPostToDefaultCollection.name} was called`);
+
+    const result = await this.collectionService.addPostToDefaultCollection(ctx, query);
 
     return {
       data: result,

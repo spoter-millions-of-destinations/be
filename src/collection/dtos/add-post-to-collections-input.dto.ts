@@ -17,3 +17,10 @@ export class AddPostToCollectionsInput {
   @IsArray()
   collectionIds: number[];
 }
+
+export class AddPostToDefaultCollectionInput {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  postId: number;
+}

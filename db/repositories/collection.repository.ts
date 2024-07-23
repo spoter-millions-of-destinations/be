@@ -10,6 +10,36 @@ export class CollectionRepository extends Repository<Collection> {
   }
 
   async getById(id: number): Promise<Collection | null> {
-    return await this.findOne({ where: { id }, relations: ['user', 'collectionItems', 'collectionItems.post', 'collectionItems.post.user'] });
+    return await this.findOne({
+      where: { id },
+      relations: [
+        'user',
+        'collectionItems',
+        'collectionItems.post',
+        'collectionItems.post.user',
+      ],
+    });
+  }
+
+  async getCollections(
+    userId: number,
+    skip: number,
+    take: number,
+    postId?: number,
+  ): Promise<[Collection[], number]> {
+    const queryBuilder = this.createQueryBuilder('collection')
+      .where('collection.userId = :userId', { userId })
+      .leftJoinAndSelect('collection.user', 'user')
+      .leftJoin('collection.collectionItems', 'collectionItems')
+      .skip(skip)
+      .take(take);
+
+    postId &&
+      queryBuilder.addSelect(
+        `Case when collectionItems.postId = ${postId} then 1 else 0 end`,
+        'collection_isAdded',
+      );
+
+    return await queryBuilder.getManyAndCount();
   }
 }

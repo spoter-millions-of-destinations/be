@@ -38,6 +38,10 @@ export class CollectionOutput {
   @Type(() => CollectionItemOutput)
   @ApiProperty()
   collectionItems: CollectionItemOutput[];
+
+  @Expose()
+  @ApiProperty()
+  isAdded: boolean;
 }
 
 export class CollectionItemOutput {
