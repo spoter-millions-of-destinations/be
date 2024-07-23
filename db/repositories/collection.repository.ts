@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 
 import { Collection } from '../entities/collection.entity';
+import { CollectionItem } from '../entities/collectionItem.entity';
 
 @Injectable()
 export class CollectionRepository extends Repository<Collection> {
@@ -30,7 +31,12 @@ export class CollectionRepository extends Repository<Collection> {
     const queryBuilder = this.createQueryBuilder('collection')
       .where('collection.userId = :userId', { userId })
       .leftJoinAndSelect('collection.user', 'user')
-      .leftJoin('collection.collectionItems', 'collectionItems')
+      .leftJoin(
+        CollectionItem,
+        'collectionItems',
+        'collectionItems.collectionId = collection.id and collectionItems.postId = :postId',
+        { postId },
+      )
       .skip(skip)
       .take(take);
 
