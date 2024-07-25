@@ -9,6 +9,15 @@ export class GetPostsParamsDto extends PaginationParamsDto {
     description: 'Optional',
     type: String,
   })
+  @IsNumber()
+  @IsOptional()
+  @Transform(({ value }) => parseInt(value), { toClassOnly: true })
+  attractionId?: number;
+
+  @ApiPropertyOptional({
+    description: 'Optional',
+    type: String,
+  })
   @IsString()
   @IsOptional()
   search?: string;

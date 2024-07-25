@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 
+import { AttractionOutput } from '../../attraction/dtos/attraction-output.dto';
 import { UserOutput } from './user-output.dto';
 
 export class PostOutput {
@@ -44,4 +45,9 @@ export class PostOutput {
   @Type(() => UserOutput)
   @ApiProperty()
   user: UserOutput;
+
+  @Expose()
+  @ApiProperty()
+  @Type(() => AttractionOutput)
+  attraction: AttractionOutput;
 }

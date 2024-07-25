@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 
-// import { Like } from 'typeorm';
 import { Post } from '../../../db/entities/post.entity';
 import { User } from '../../../db/entities/user.entity';
+import { AttractionRepository } from '../../../db/repositories/attraction.repository';
 import { FavoriteRepository } from '../../../db/repositories/favorite.repository';
 import { PostRepository } from '../../../db/repositories/post.repository';
 import { Action } from '../../shared/acl/action.constant';
@@ -11,7 +11,10 @@ import { Actor } from '../../shared/acl/actor.constant';
 import { AppLogger } from '../../shared/logger/logger.service';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
 import { UserService } from '../../user/services/user.service';
-// import { crawlData } from '../../utils/crawlData';
+import {
+  getPlaceFromCoordinates,
+  MapboxResponse,
+} from '../../utils/getPlaceFromCoordinates';
 import { GetPostsParamsDto } from '../dtos/get-posts-input.dto';
 import { CreatePostInput, UpdatePostInput } from '../dtos/post-input.dto';
 import { PostOutput } from '../dtos/post-output.dto';
@@ -25,6 +28,7 @@ export class PostService {
     private favoriteRepository: FavoriteRepository,
     private userService: UserService,
     private aclService: PostAclService,
+    private attractionRepository: AttractionRepository,
     private readonly logger: AppLogger,
   ) {
     this.logger.setContext(PostService.name);
@@ -35,7 +39,6 @@ export class PostService {
     input: CreatePostInput,
   ): Promise<PostOutput> {
     this.logger.log(ctx, `${this.createPost.name} was called`);
-    console.log('input', input);
 
     const post = plainToClass(Post, input);
 
@@ -50,6 +53,21 @@ export class PostService {
     }
 
     post.user = plainToClass(User, user);
+
+    const attraction: MapboxResponse = await getPlaceFromCoordinates({
+      longitude: post.longitude,
+      latitude: post.latitude,
+    });
+
+    const attractionEntity =
+      await this.attractionRepository.getAttractionByPlace(attraction);
+
+    if (attractionEntity) {
+      post.attraction = attractionEntity;
+    } else {
+      post.attraction =
+        await this.attractionRepository.createAttraction(attraction);
+    }
 
     this.logger.log(ctx, `calling ${PostRepository.name}.save`);
     const savedPost = await this.repository.save(post);
@@ -166,10 +184,10 @@ export class PostService {
   async crawlData() {
     const users = await User.find();
     const filePath = 'data/maps-results2.xlsx';
-    const posts: Partial<Post>[] = readExcelFile(filePath)
+    const posts: Partial<Post>[] = readExcelFile(filePath);
     posts.forEach((post) => {
       post.userId = users[Math.floor(Math.random() * users.length)].id;
-    })
+    });
     // console.log('posts', posts);
     await this.repository.save(posts);
   }

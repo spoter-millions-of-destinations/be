@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { CustomBaseEntity } from '../../src/common/base/baseEntity';
+import { Attraction } from './attraction.entity';
 import { Comment } from './comment.entity';
 import { Favorite } from './favorite.entity';
 import { User } from './user.entity';
@@ -35,6 +36,9 @@ export class Post extends CustomBaseEntity {
   @Column()
   rate: number;
 
+  @Column()
+  attractionId: number;
+
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: 'userId' })
   user: User;
@@ -44,6 +48,10 @@ export class Post extends CustomBaseEntity {
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
+
+  @ManyToOne(() => Attraction, (attraction) => attraction.posts)
+  @JoinColumn({ name: 'attractionId' })
+  attraction: Attraction;
 
   //Virtual column
   @Column({

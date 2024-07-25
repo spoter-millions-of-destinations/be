@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AttractionModule } from './attraction/attraction.module';
 import { AuthModule } from './auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CollectionModule } from './collection/collection.module';
@@ -21,6 +22,7 @@ import { UserModule } from './user/user.module';
     FavoriteModule,
     CollectionModule,
     CommentModule,
+    AttractionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

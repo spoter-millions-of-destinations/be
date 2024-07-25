@@ -33,4 +33,7 @@ export default (): any => ({
     apiSecret: process.env.CLOUDINARY_SECRET,
     folder: process.env.CLOUDINARY_ORIGIN_FOLDER,
   },
+  mapbox: {
+    apiKey: process.env.MAPBOX_API_KEY,
+  },
 });
