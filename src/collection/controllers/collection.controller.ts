@@ -25,10 +25,14 @@ import {
   BaseApiResponse,
   SwaggerBaseApiResponse,
 } from '../../shared/dtos/base-api-response.dto';
+import { PaginationParamsDto } from '../../shared/dtos/pagination-params.dto';
 import { AppLogger } from '../../shared/logger/logger.service';
 import { ReqContext } from '../../shared/request-context/req-context.decorator';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
-import { AddPostToCollectionsInput, AddPostToDefaultCollectionInput } from '../dtos/add-post-to-collections-input.dto';
+import {
+  AddPostToCollectionsInput,
+  AddPostToDefaultCollectionInput,
+} from '../dtos/add-post-to-collections-input.dto';
 import { CreateCollectionInput } from '../dtos/collection-input.dto';
 import { CollectionOutput } from '../dtos/collection-output.dto';
 import { GetCollectionsParamsDto } from '../dtos/get-collections-input.dto';
@@ -43,6 +47,29 @@ export class CollectionController {
     private readonly logger: AppLogger,
   ) {
     this.logger.setContext(CollectionController.name);
+  }
+
+  @Get('public')
+  @ApiOperation({
+    summary: 'Get public collections API',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: SwaggerBaseApiResponse([CollectionOutput]),
+  })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getPublicCollections(
+    @ReqContext() ctx: RequestContext,
+    @Query() query: PaginationParamsDto,
+  ): Promise<BaseApiResponse<CollectionOutput[]>> {
+    this.logger.log(ctx, `${this.getPublicCollections.name} was called`);
+
+    const { collections, count } =
+      await this.collectionService.getPublicCollections(ctx, query);
+
+    return { data: collections, meta: { count } };
   }
 
   @Post()
@@ -134,8 +161,11 @@ export class CollectionController {
   ): Promise<BaseApiResponse<ResponseMessageBase>> {
     this.logger.log(ctx, `${this.addPostsToCollection.name} was called`);
 
-    const result = await this.collectionService.addPostsToCollection(ctx, query);
-    
+    const result = await this.collectionService.addPostsToCollection(
+      ctx,
+      query,
+    );
+
     return {
       data: result,
       meta: {},
@@ -184,7 +214,10 @@ export class CollectionController {
   ): Promise<BaseApiResponse<ResponseMessageBase>> {
     this.logger.log(ctx, `${this.removePostFromCollection.name} was called`);
 
-    const result = await this.collectionService.removePostFromCollection(ctx, query);
+    const result = await this.collectionService.removePostFromCollection(
+      ctx,
+      query,
+    );
 
     return {
       data: result,
@@ -209,7 +242,10 @@ export class CollectionController {
   ): Promise<BaseApiResponse<ResponseMessageBase>> {
     this.logger.log(ctx, `${this.addPostToDefaultCollection.name} was called`);
 
-    const result = await this.collectionService.addPostToDefaultCollection(ctx, query);
+    const result = await this.collectionService.addPostToDefaultCollection(
+      ctx,
+      query,
+    );
 
     return {
       data: result,

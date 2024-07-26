@@ -14,6 +14,7 @@ import { PostRepository } from '../../../db/repositories/post.repository';
 import { ResponseMessageBase } from '../../common/base/returnBase';
 import { Action } from '../../shared/acl/action.constant';
 import { Actor } from '../../shared/acl/actor.constant';
+import { PaginationParamsDto } from '../../shared/dtos/pagination-params.dto';
 import { AppLogger } from '../../shared/logger/logger.service';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
 import { UserService } from '../../user/services/user.service';
@@ -252,5 +253,32 @@ export class CollectionService {
     });
 
     return { message: 'Post added to default collection', success: true };
+  }
+
+  async getPublicCollections(
+    ctx: RequestContext,
+    query: PaginationParamsDto,
+  ): Promise<{ collections: CollectionOutput[]; count: number }> {
+    this.logger.log(ctx, `${this.getPublicCollections.name} was called`);
+    const { limit, offset } = query;
+    
+    const actor: Actor = ctx.user!;
+
+    const isAllowed = this.aclService.forActor(actor).canDoAction(Action.List);
+    if (!isAllowed) {
+      throw new UnauthorizedException();
+    }
+
+    this.logger.log(ctx, `calling ${CollectionRepository.name}.find`);
+    const [collections, count] = await this.repository.getPublicCollections(
+      offset,
+      limit,
+    );
+
+    const collectionsOutput = plainToClass(CollectionOutput, collections, {
+      excludeExtraneousValues: true,
+    });
+
+    return { collections: collectionsOutput, count };
   }
 }

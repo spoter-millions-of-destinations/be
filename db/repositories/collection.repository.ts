@@ -48,4 +48,20 @@ export class CollectionRepository extends Repository<Collection> {
 
     return await queryBuilder.getManyAndCount();
   }
+  async getPublicCollections(
+    skip: number,
+    take: number,
+  ): Promise<[Collection[], number]> {
+    const queryBuilder = this.createQueryBuilder('collection')
+      .leftJoinAndSelect('collection.user', 'user')
+      .leftJoinAndSelect('collection.collectionItems', 'collectionItems')
+      .leftJoinAndSelect('collectionItems.post', 'post')
+      .where(`collection.name <> 'My Collections'`)
+      .skip(skip)
+      .take(take);
+    console.log('queryBuilder', queryBuilder.getQueryAndParameters());
+
+    return await queryBuilder.getManyAndCount();
+  }
 }
+
