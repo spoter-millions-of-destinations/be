@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+
+import { AdvertisingPackageOutput } from '../../advertisingPackage/dtos/advertisingPackage-output.dto';
 
 export class AttractionOutput {
   @Expose()
@@ -57,4 +59,9 @@ export class AttractionOutput {
   @Expose()
   @ApiProperty()
   updatedAt: Date;
+
+  @Expose()
+  @ApiProperty()
+  @Type(() => AdvertisingPackageOutput)
+  advertisingPackage: AdvertisingPackageOutput;
 }

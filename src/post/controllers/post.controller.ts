@@ -125,7 +125,7 @@ export class PostController {
   // ): Promise<ResponseMessageBase> {
   //   this.logger.log(ctx, `${this.crawlData.name} was called`);
 
-  //   await this.postService.crawlData();
+  //   await this.postService.crawlData1();
   //   return { success: true, message: 'Data has been saved successfully.' };
   // }
 

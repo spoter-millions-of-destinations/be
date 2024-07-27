@@ -23,7 +23,7 @@ export class AttractionRepository extends Repository<Attraction> {
     });
   }
 
-  async createAttraction(attraction: MapboxResponse): Promise<Attraction> {
-    return this.save({...attraction, name: attraction.placeName});
+  async createAttraction(attraction: Partial<Attraction>): Promise<Attraction> {
+    return this.save(attraction);
   }
 }

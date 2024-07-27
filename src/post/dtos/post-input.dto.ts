@@ -22,6 +22,16 @@ export class CreatePostInput {
   @ApiProperty()
   @IsNumber()
   rate: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  advertisingPackageId?: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  address?: string;
 }
 
 export class UpdatePostInput {

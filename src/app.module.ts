@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { AdvertisingPackageModule } from './advertisingPackage/advertisingPackage.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AttractionModule } from './attraction/attraction.module';
@@ -10,6 +11,7 @@ import { CommentModule } from './comment/comment.module';
 import { FavoriteModule } from './favorite/favorite.module';
 import { PostModule } from './post/post.module';
 import { SharedModule } from './shared/shared.module';
+import { StripeModule } from './stripe/stripe.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -23,6 +25,8 @@ import { UserModule } from './user/user.module';
     CollectionModule,
     CommentModule,
     AttractionModule,
+    StripeModule,
+    AdvertisingPackageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

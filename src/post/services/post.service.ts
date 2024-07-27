@@ -1,6 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 
+// import * as _ from 'lodash';
+// import { Attraction } from '../../../db/entities/attraction.entity';
+// import { Collection } from '../../../db/entities/collection.entity';
+// import { CollectionItem } from '../../../db/entities/collectionItem.entity';
+// import { Comment } from '../../../db/entities/comment.entity';
 import { Post } from '../../../db/entities/post.entity';
 import { User } from '../../../db/entities/user.entity';
 import { AttractionRepository } from '../../../db/repositories/attraction.repository';
@@ -13,6 +18,7 @@ import { RequestContext } from '../../shared/request-context/request-context.dto
 import { UserService } from '../../user/services/user.service';
 import {
   getPlaceFromCoordinates,
+  getPlaceFromSearchText,
   MapboxResponse,
 } from '../../utils/getPlaceFromCoordinates';
 import { GetPostsParamsDto } from '../dtos/get-posts-input.dto';
@@ -54,19 +60,35 @@ export class PostService {
 
     post.user = plainToClass(User, user);
 
-    const attraction: MapboxResponse = await getPlaceFromCoordinates({
-      longitude: post.longitude,
-      latitude: post.latitude,
-    });
+    if (input.advertisingPackageId && input.address) {
+      const attraction: MapboxResponse = await getPlaceFromSearchText(
+        input.address,
+      );
 
-    const attractionEntity =
-      await this.attractionRepository.getAttractionByPlace(attraction);
-
-    if (attractionEntity) {
-      post.attraction = attractionEntity;
+      post.attraction = await this.attractionRepository.createAttraction({
+        ...attraction,
+        name: input.address,
+        advertisingPackageId: input.advertisingPackageId,
+      });
+      post.longitude = attraction.longitude;
+      post.latitude = attraction.latitude;
     } else {
-      post.attraction =
-        await this.attractionRepository.createAttraction(attraction);
+      const attraction: MapboxResponse = await getPlaceFromCoordinates({
+        longitude: post.longitude,
+        latitude: post.latitude,
+      });
+
+      const attractionEntity =
+        await this.attractionRepository.getAttractionByPlace(attraction);
+
+      if (attractionEntity) {
+        post.attraction = attractionEntity;
+      } else {
+        post.attraction = await this.attractionRepository.createAttraction({
+          ...attraction,
+          name: attraction.placeName,
+        });
+      }
     }
 
     this.logger.log(ctx, `calling ${PostRepository.name}.save`);
@@ -190,5 +212,67 @@ export class PostService {
     });
     // console.log('posts', posts);
     await this.repository.save(posts);
+  }
+
+  async crawlData1() {
+    // const users = await User.find();
+    // const userIds = users.map((user) => user.id);
+    // const attractionEntities = await Attraction.find();
+    // const postEntities = await Post.find();
+    // const filePath = 'data/data1.xlsx';
+    // const { attractions, posts, collections, comments } =
+    //   readDataFromExcelFile(filePath);
+    // const attractionEntities: any[] = []
+    // attractions.forEach(async (attraction) => {
+    //   // const attractionData: MapboxResponse = await getPlaceFromCoordinates({
+    //   //   longitude: attraction?.longitude as number,
+    //   //   latitude: attraction?.latitude as number,
+    //   // });
+    //   const attractionEntity = { ...attraction };
+    //   attractionEntities.push(attractionEntity);
+    //   // await Attraction.create(attractionEntity).save();
+    // });
+    // posts.slice(0,13).forEach((post: any) => {
+    //   post.userId = userIds[Math.floor(Math.random() * userIds.length)];
+    //   const attraction = attractions.find(
+    //     (attraction) => attraction?.order === post?.attractionOrder,
+    //   );
+    //   const attractionData = attractionEntities.find(
+    //     (attractionEntity) => attractionEntity?.name === attraction?.name,
+    //   );
+    //   post.attraction = attractionData;
+    //   console.log('post', _.omit(post, ['order', 'attractionOrder']));
+    //   Post.create(_.omit(post, ['order', 'attractionOrder'])).save();
+    // });
+    // collections.forEach(async (collection: any) => {
+    //   collection.userId = 22;
+    //   const collectionEntity: Collection = await Collection.create(_.omit(collection, ['postOrders'])).save();
+    //   const postOrders = collection.postOrders.split(',').map(Number);
+    //   const postDatas = postOrders.map((postOrder: number) => {
+    //     return posts.find((post) => post?.order === postOrder);
+    //   })
+    //   const collectionItems: Partial<CollectionItem>[] = [];
+    //   postDatas.forEach( (postData: any) => {
+    //     const postId = postEntities.find((postEntity) => postEntity?.description === postData?.description)?.id ?? 0;
+    //     const collectionItem = {
+    //       collectionId: collectionEntity.id,
+    //       postId,
+    //     };
+    //     collectionItems.push(collectionItem);
+    //   })
+    //   await CollectionItem.save(collectionItems);
+    // });
+    // comments.forEach(async (comment: any) => {
+    //   const post = posts.find((post) => post?.order === comment?.postOrder);
+    //   const postId = postEntities.find(
+    //     (postEntity) => postEntity?.description === post?.description,
+    //   )?.id ?? 0;
+    //   const commentData: Partial<Comment> = {
+    //     postId,
+    //     content: comment?.content as string,
+    //   };
+    //   console.log('comment', commentData);
+    //   await Comment.save(commentData);
+    // });
   }
 }

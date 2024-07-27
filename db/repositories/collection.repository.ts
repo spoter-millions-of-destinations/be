@@ -18,6 +18,7 @@ export class CollectionRepository extends Repository<Collection> {
         'collectionItems',
         'collectionItems.post',
         'collectionItems.post.user',
+        'collectionItems.post.attraction',
       ],
     });
   }
@@ -56,6 +57,7 @@ export class CollectionRepository extends Repository<Collection> {
       .leftJoinAndSelect('collection.user', 'user')
       .leftJoinAndSelect('collection.collectionItems', 'collectionItems')
       .leftJoinAndSelect('collectionItems.post', 'post')
+      .leftJoinAndSelect('post.attraction', 'attraction')
       .where(`collection.name <> 'My Collections'`)
       .skip(skip)
       .take(take);

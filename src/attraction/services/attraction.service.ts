@@ -39,6 +39,7 @@ export class AttractionService {
       where: {},
       take: limit,
       skip: offset,
+      relations: ['advertisingPackage'],
     });
 
     const attractionsOutput = plainToClass(AttractionOutput, attractions, {

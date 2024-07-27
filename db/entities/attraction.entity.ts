@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { CustomBaseEntity } from '../../src/common/base/baseEntity';
+import { AdvertisingPackage } from './advertisingPackage.entity';
 import { Post } from './post.entity';
 
 @Entity('attractions')
@@ -41,6 +42,13 @@ export class Attraction extends CustomBaseEntity {
   @Column({ type: 'numeric' })
   longitude: number;
 
+  @Column()
+  advertisingPackageId: number;
+
   @OneToMany(() => Post, (post) => post.attraction)
   posts: Post[];
+
+  @ManyToOne(() => AdvertisingPackage)
+  @JoinColumn({ name: 'advertisingPackageId' })
+  advertisingPackage: AdvertisingPackage;
 }
