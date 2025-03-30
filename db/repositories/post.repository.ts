@@ -62,6 +62,7 @@ export class PostRepository extends Repository<Post> {
     const qb = this.createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
       .leftJoinAndSelect('post.attraction', 'attraction')
+      .leftJoinAndSelect('attraction.advertisingPackage', 'advertisingPackage')
       .where('attraction.advertisingPackageId IS NOT NULL')
       .orderBy('post.createdAt', 'DESC')
       .skip(query.offset)
