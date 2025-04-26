@@ -11,7 +11,10 @@ export class PostRepository extends Repository<Post> {
   }
 
   async getById(id: number): Promise<Post> {
-    const post = await this.findOne({ where: { id }, relations: ['user', 'attraction'] });
+    const post = await this.findOne({
+      where: { id },
+      relations: ['user', 'attraction'],
+    });
     if (!post) {
       throw new NotFoundException();
     }
@@ -20,44 +23,61 @@ export class PostRepository extends Repository<Post> {
   }
 
   async getNormalPosts(query: GetPostsParamsDto): Promise<[Post[], number]> {
-    const limit = query.limit - (query.limit / 5);
+    const limit = query.limit - query.limit / 5;
     const qb = this.createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
       .leftJoinAndSelect('post.attraction', 'attraction')
-      .where('post.description ILIKE :search', { search: `%${query.search ?? ''}%` })
+      .where('post.description ILIKE :search', {
+        search: `%${query.search ?? ''}%`,
+      })
       .andWhere('attraction.advertisingPackageId IS NULL')
       .skip(query.offset)
       .take(limit);
 
-      query.rate && qb.andWhere('post.rate = :rate', { rate: query.rate });
+    query.rate && qb.andWhere('post.rate = :rate', { rate: query.rate });
 
-      query.attractionId && qb.andWhere('post.attractionId = :attractionId', { attractionId: query.attractionId });
+    query.attractionId &&
+      qb.andWhere('post.attractionId = :attractionId', {
+        attractionId: query.attractionId,
+      });
 
-      if (query.longitude && query.latitude) {
-        qb.andWhere(
-          `ST_DWithin(
-              'SRID=4326;POINT(${query.longitude} ${query.latitude})'::geography,
-              ST_SetSRID(ST_MakePoint("post"."longitude", "post"."latitude"), 4326)::geography,
-              ${query.radius ?? 10000}
-          )`
-        )
-        .orderBy(
-          `ST_Distance(
-              'SRID=4326;POINT(${query.longitude} ${query.latitude})'::geography,
-              ST_SetSRID(ST_MakePoint("post"."longitude", "post"."latitude"), 4326)::geography
-          )`,
-          'ASC',
+    if (query.userId) {
+      qb.andWhere('post.userId = :userId', { userId: query.userId });
+    }
 
-        );
-      }
-      else {
-        qb.orderBy('post.createdAt', 'DESC');
-      }
-      
+    if (query.longitude && query.latitude) {
+      const alias = qb.alias;
+
+      // Add khoảng cách vào SELECT để TypeORM hiểu và có alias hợp lệ
+      qb.addSelect(
+        `ST_Distance(
+          'SRID=4326;POINT(${query.longitude} ${query.latitude})'::geography,
+          ST_SetSRID(ST_MakePoint(${alias}.longitude, ${alias}.latitude), 4326)::geography
+        )`,
+        'distance',
+      );
+
+      qb.andWhere(
+        `ST_DWithin(
+          'SRID=4326;POINT(${query.longitude} ${query.latitude})'::geography,
+          ST_SetSRID(ST_MakePoint(${alias}.longitude, ${alias}.latitude), 4326)::geography,
+          ${query.radius ?? 10000}
+        )`,
+      );
+
+      qb.orderBy('distance', 'ASC');
+    } else {
+      qb.orderBy('post.createdAt', 'DESC');
+    }
+
     return await qb.getManyAndCount();
   }
 
-  async getAdvertisingPosts(query: GetPostsParamsDto): Promise<[Post[], number]> {
+  async getAdvertisingPosts(
+    query: GetPostsParamsDto,
+  ): Promise<[Post[], number]> {
+    console.log(query.userId);
+
     const limit = query.limit / 5;
     const qb = this.createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
@@ -67,7 +87,10 @@ export class PostRepository extends Repository<Post> {
       .orderBy('post.createdAt', 'DESC')
       .skip(query.offset)
       .take(limit);
-      
+
+    if (query.userId) {
+      qb.andWhere('post.userId = :userId', { userId: query.userId });
+    }
     return await qb.getManyAndCount();
   }
 
@@ -78,7 +101,7 @@ export class PostRepository extends Repository<Post> {
     const posts = [...normalPosts[0]];
 
     for (let i = 1; i <= numOfAdvertisingPosts; i++) {
-      posts.splice((i * 5) - 1, 0, advertisingPosts[0][i-1]);
+      posts.splice(i * 5 - 1, 0, advertisingPosts[0][i - 1]);
     }
 
     return [posts, normalPosts[1] + advertisingPosts[1]];

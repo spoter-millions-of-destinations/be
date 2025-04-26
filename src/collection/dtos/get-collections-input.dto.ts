@@ -11,3 +11,11 @@ export class GetCollectionsParamsDto extends PaginationParamsDto {
   @Transform(({ value }) => parseInt(value), { toClassOnly: true })
   postId?: number;
 }
+
+export class GetCollectionsOfUserParamDto extends PaginationParamsDto {
+  @ApiPropertyOptional()
+  @IsNumber()
+  @IsOptional()
+  @Transform(({ value }) => parseInt(value), { toClassOnly: true })
+  userId: number;
+}

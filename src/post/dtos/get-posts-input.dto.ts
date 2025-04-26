@@ -7,6 +7,15 @@ import { PaginationParamsDto } from '../../shared/dtos/pagination-params.dto';
 export class GetPostsParamsDto extends PaginationParamsDto {
   @ApiPropertyOptional({
     description: 'Optional',
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Transform(({ value }) => parseInt(value), { toClassOnly: true })
+  userId?: number;
+
+  @ApiPropertyOptional({
+    description: 'Optional',
     type: String,
   })
   @IsNumber()
