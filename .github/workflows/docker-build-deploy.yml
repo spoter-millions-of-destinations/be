@@ -1,4 +1,4 @@
-name: Build, Push Docker Image and Deploy
+name: Build, Push Docker Image and Deploy on Windows
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_and_deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -24,32 +24,67 @@ jobs:
 
       - name: Extract version
         id: extract_version
+        shell: powershell
         run: |
-          VERSION=$(date +%Y%m%d%H%M%S)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          $VERSION = Get-Date -Format "yyyyMMddHHmmss"
+          echo "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build and Push Docker Image
+        shell: powershell
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/spoter-be:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }} -t ${{ secrets.DOCKER_USERNAME }}/spoter-be:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }}
           docker push ${{ secrets.DOCKER_USERNAME }}/spoter-be:latest
 
-      - name: SSH into server and deploy
+      - name: SSH into Windows server and deploy
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/spoter-be:latest
-            echo "Docker pull completed"
-            docker stop spoter-be || true
-            docker rm spoter-be || true
-            echo "Stopped and removed old container"
-            docker image prune -a -f
-            echo "Pruned unused images"
-            echo "Starting docker run..."
-            docker run -it -d --name spoter-be --env-file "H:\spoter_data\.env" -p 3000:3000 phuocnguyen2412/spoter-be:latest
-            echo "Docker container started"
-            sleep 5 # đợi container chạy khởi động
-            docker ps -a
-            docker logs spoter-be --tail 100
+            powershell -Command "
+              # Kiểm tra xem Docker Desktop đang chạy
+              if (-not (Get-Process 'com.docker.proxy' -ErrorAction SilentlyContinue)) {
+                Write-Output 'Docker Desktop is not running. Please start Docker Desktop.'
+                exit 1
+              }
+
+              # Kéo image mới
+              docker pull ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }}
+              Write-Output 'Docker pull completed'
+
+              # Dừng và xóa container cũ nếu có
+              docker stop spoter-be 2>$null
+              docker rm spoter-be 2>$null
+              Write-Output 'Stopped and removed old container'
+
+              # Chạy container mới
+              Write-Output 'Starting docker run...'
+              docker run -d --name spoter-be --env-file 'H:\spoter_data\.env' -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }}
+              if ($LASTEXITCODE -ne 0) {
+                Write-Output 'Failed to start container'
+                docker logs spoter-be
+                exit 1
+              }
+              Write-Output 'Docker container started'
+
+              # Đợi container khởi động
+              Start-Sleep -Seconds 10
+
+              # Kiểm tra trạng thái container
+              $status = docker inspect -f '{{.State.Running}}' spoter-be
+              if ($status -ne 'true') {
+                Write-Output 'Container is not running!'
+                docker logs spoter-be
+                exit 1
+              }
+
+              # Xóa các image không sử dụng
+              docker image prune -a -f
+              Write-Output 'Pruned unused images'
+
+              # Hiển thị trạng thái và log
+              docker ps -a
+              docker logs spoter-be --tail 100
+            "
