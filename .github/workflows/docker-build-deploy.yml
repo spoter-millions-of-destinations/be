@@ -41,24 +41,20 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            # Chuyển sang PowerShell để chạy lệnh
+       
             powershell -Command "
-              # Kiểm tra xem Docker Desktop đang chạy
               if (-not (Get-Process 'com.docker.proxy' -ErrorAction SilentlyContinue)) {
                 Write-Output 'Docker Desktop is not running. Please start Docker Desktop.'
                 exit 1
               }
 
-              # Kéo image mới
               docker pull ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }}
               Write-Output 'Docker pull completed'
 
-              # Dừng và xóa container cũ nếu có
               docker stop spoter-be 2>$null
               docker rm spoter-be 2>$null
               Write-Output 'Stopped and removed old container'
 
-              # Chạy container mới
               Write-Output 'Starting docker run...'
               docker run -d --name spoter-be --env-file 'H:\spoter_data\.env' -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }}
               if ($LASTEXITCODE -ne 0) {
@@ -68,10 +64,8 @@ jobs:
               }
               Write-Output 'Docker container started'
 
-              # Đợi container khởi động
               Start-Sleep -Seconds 10
 
-              # Kiểm tra trạng thái container
               $status = docker inspect -f '{{.State.Running}}' spoter-be
               if ($status -ne 'true') {
                 Write-Output 'Container is not running!'
@@ -79,11 +73,9 @@ jobs:
                 exit 1
               }
 
-              # Xóa các image không sử dụng
               docker image prune -a -f
               Write-Output 'Pruned unused images'
 
-              # Hiển thị trạng thái và log
               docker ps -a
               docker logs spoter-be --tail 100
             "
