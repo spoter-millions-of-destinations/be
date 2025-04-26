@@ -72,6 +72,38 @@ export class CollectionController {
     return { data: collections, meta: { count } };
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get('collections-of-user/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Get collections of user by id API',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: SwaggerBaseApiResponse([CollectionOutput]),
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: BaseApiErrorResponse,
+  })
+  @ApiBearerAuth()
+  async getCollectionsOfUser(
+    @ReqContext() ctx: RequestContext,
+    @Param('id') id: number,
+    @Query('limit') limit: number,
+    @Query('offset') offset: number,
+  ): Promise<BaseApiResponse<CollectionOutput[]>> {
+    console.log(id, limit, offset);
+    this.logger.log(ctx, `${this.getCollectionsOfUser.name} was called`);
+
+    const colletions = await this.collectionService.getCollectionsOfUser(ctx, {
+      userId: id,
+      limit,
+      offset,
+    });
+    return { data: colletions.collections, meta: {} };
+  }
+
   @Post()
   @ApiOperation({
     summary: 'Create collection API',

@@ -78,10 +78,7 @@ export class PostController {
   ): Promise<BaseApiResponse<PostOutput[]>> {
     this.logger.log(ctx, `${this.getPosts.name} was called`);
 
-    const { posts, count } = await this.postService.getPosts(
-      ctx,
-      query
-    );
+    const { posts, count } = await this.postService.getPosts(ctx, query);
 
     return { data: posts, meta: { count } };
   }

@@ -18,10 +18,16 @@ import { PaginationParamsDto } from '../../shared/dtos/pagination-params.dto';
 import { AppLogger } from '../../shared/logger/logger.service';
 import { RequestContext } from '../../shared/request-context/request-context.dto';
 import { UserService } from '../../user/services/user.service';
-import { AddPostToCollectionsInput, AddPostToDefaultCollectionInput } from '../dtos/add-post-to-collections-input.dto';
+import {
+  AddPostToCollectionsInput,
+  AddPostToDefaultCollectionInput,
+} from '../dtos/add-post-to-collections-input.dto';
 import { CreateCollectionInput } from '../dtos/collection-input.dto';
 import { CollectionOutput } from '../dtos/collection-output.dto';
-import { GetCollectionsParamsDto } from '../dtos/get-collections-input.dto';
+import {
+  GetCollectionsOfUserParamDto,
+  GetCollectionsParamsDto,
+} from '../dtos/get-collections-input.dto';
 import { RemovePostFromCollectionsInput } from '../dtos/remove-post-from-collection-input.dto';
 import { CollectionAclService } from './collection-acl.service';
 
@@ -50,7 +56,6 @@ export class CollectionService {
     const actor: Actor = ctx.user!;
     const user = await this.userService.getUserById(ctx, actor.id);
 
-
     const isAllowed = this.aclService
       .forActor(actor)
       .canDoAction(Action.Create, collection);
@@ -66,6 +71,34 @@ export class CollectionService {
     return plainToClass(CollectionOutput, savedCollection, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async getCollectionsOfUser(
+    ctx: RequestContext,
+    query: GetCollectionsOfUserParamDto,
+  ): Promise<{ collections: CollectionOutput[]; count: number }> {
+    this.logger.log(ctx, `${this.getCollections.name} was called`);
+    const { limit, offset, userId } = query;
+
+    const actor: Actor = ctx.user!;
+
+    const isAllowed = this.aclService.forActor(actor).canDoAction(Action.List);
+    if (!isAllowed) {
+      throw new UnauthorizedException();
+    }
+
+    this.logger.log(ctx, `calling ${CollectionRepository.name}.find`);
+    const [collections, count] = await this.repository.getCollections(
+      userId,
+      offset,
+      limit,
+    );
+
+    const collectionsOutput = plainToClass(CollectionOutput, collections, {
+      excludeExtraneousValues: true,
+    });
+
+    return { collections: collectionsOutput, count };
   }
 
   async getCollections(
@@ -122,14 +155,16 @@ export class CollectionService {
 
   async addPostsToCollection(
     ctx: RequestContext,
-    query: AddPostToCollectionsInput
+    query: AddPostToCollectionsInput,
   ): Promise<ResponseMessageBase> {
     this.logger.log(ctx, `${this.addPostsToCollection.name} was called`);
     const { postId, collectionIds } = query;
 
     const actor: Actor = ctx.user!;
 
-    const collections = await this.repository.find({ where: { id: In(collectionIds) } });
+    const collections = await this.repository.find({
+      where: { id: In(collectionIds) },
+    });
 
     collections.forEach((collection) => {
       const isAllowed = this.aclService
@@ -152,13 +187,17 @@ export class CollectionService {
       };
     });
 
-    const isPostInCollections = await this.collectionItemRepository.checkIfPostIsInCollections(
-      postId,
-      collectionIds,
-    );
+    const isPostInCollections =
+      await this.collectionItemRepository.checkIfPostIsInCollections(
+        postId,
+        collectionIds,
+      );
 
     if (isPostInCollections) {
-      return { message: 'Post is already in one of the collections', success: false };
+      return {
+        message: 'Post is already in one of the collections',
+        success: false,
+      };
     }
 
     await this.collectionItemRepository.save(collectionItems);
@@ -244,7 +283,10 @@ export class CollectionService {
     });
 
     if (isPostInCollection) {
-      return { message: 'Post is already in the default collection', success: true };
+      return {
+        message: 'Post is already in the default collection',
+        success: true,
+      };
     }
 
     await this.collectionItemRepository.save({
@@ -261,7 +303,7 @@ export class CollectionService {
   ): Promise<{ collections: CollectionOutput[]; count: number }> {
     this.logger.log(ctx, `${this.getPublicCollections.name} was called`);
     const { limit, offset } = query;
-    
+
     const actor: Actor = ctx.user!;
 
     const isAllowed = this.aclService.forActor(actor).canDoAction(Action.List);
