@@ -30,8 +30,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }} .
-          docker push ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/spoter-be:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/spoter-be:latest
 
       - name: SSH into server and deploy
         uses: appleboy/ssh-action@v1.0.0
@@ -40,11 +40,13 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }}
+            docker pull ${{ secrets.DOCKER_USERNAME }}/spoter-be:latest
             docker stop spoter-be || true
             docker rm spoter-be || true
             docker image prune -a -f
-            docker run -d --name spoter-be --env-file "H:\spoter_data\.env" -p 3000:3000 phuocnguyen2412/spoter-be
+            echo "Starting docker run..."
+            docker run -d --name spoter-be --env-file "H:\spoter_data\.env" -p 3000:3000 phuocnguyen2412/spoter-be:latest
+            echo "Docker container started"
             sleep 5 # đợi container chạy khởi động
             docker ps -a
             docker logs spoter-be --tail 100
