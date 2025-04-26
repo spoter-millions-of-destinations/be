@@ -40,10 +40,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            set -e
             docker pull ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }}
             docker stop spoter-be || true
             docker rm spoter-be || true
-            docker run -d --name spoter-be --env-file .env -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }}
+            docker run -d --name spoter-be --env-file "H:\spoter_data\.env" -p 3000:3000 phuocnguyen2412/spoter-be
             sleep 5 # đợi container chạy khởi động
             docker logs spoter-be --tail 100
