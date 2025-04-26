@@ -43,6 +43,8 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/spoter-be:${{ env.VERSION }}
             docker stop spoter-be || true
             docker rm spoter-be || true
+            docker image prune -a -f
             docker run -d --name spoter-be --env-file "H:\spoter_data\.env" -p 3000:3000 phuocnguyen2412/spoter-be
             sleep 5 # đợi container chạy khởi động
+            docker ps -a
             docker logs spoter-be --tail 100
