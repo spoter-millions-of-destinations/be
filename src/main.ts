@@ -1,20 +1,17 @@
 import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as fs from 'fs';
-import * as path from 'path';
 
 import { AppModule } from './app.module';
 import { VALIDATION_PIPE_OPTIONS } from './shared/constants';
 import { RequestIdMiddleware } from './shared/middlewares/request-id/request-id.middleware';
 
 async function bootstrap() {
-  const httpsOptions = {
-    key: fs.readFileSync(path.join(__dirname, '..', 'ssl', 'private-key.pem')),
-    cert: fs.readFileSync(path.join(__dirname, '..', 'ssl', 'certificate.pem')),
-  };
-  const app = await NestFactory.create(AppModule, { httpsOptions });
+  // const httpsOptions = {
+  //   key: fs.readFileSync(path.join(__dirname, '..', 'ssl', 'private-key.pem')),
+  //   cert: fs.readFileSync(path.join(__dirname, '..', 'ssl', 'certificate.pem')),
+  // };
+  const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1');
 
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
@@ -32,8 +29,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger', app, document);
 
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('port');
-  await app.listen(port || 3000);
+  await app.listen(3000);
 }
 bootstrap();
