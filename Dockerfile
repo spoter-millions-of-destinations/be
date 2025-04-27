@@ -22,3 +22,4 @@ RUN npm install --only=production
 COPY ssl ./dist/ssl
 
 CMD ["node", "dist/src/main.js"]
+EXPOSE 3000 
