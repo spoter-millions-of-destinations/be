@@ -6,7 +6,7 @@
       "ES2022"
     ],
     "baseUrl": "./",
-    "outDir": "./dist",
+    "outDir": "./public",
     "strict": true,
     "strictPropertyInitialization": false,
     "moduleResolution": "node",
